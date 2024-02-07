@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Study - Buddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional CSS for Google Docs system */
+        .google-docs,
+        .gmail {
+            display: none;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 5s ease; /* Adjusted transition duration */
+        }
+
+        .google-docs.show,
+        .gmail.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .google-docs iframe,
+        .gmail iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        .google-docs-icon,
+        .gmail-icon {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 99999;
+            background-color: #007bff;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .google-docs-icon:hover,
+        .gmail-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .google-docs-icon i,
+        .gmail-icon i {
+            transition: transform 0.3s ease;
+        }
+
+        .google-docs-icon:hover i,
+        .gmail-icon:hover i {
+            transform: rotate(180deg);
+        }
+
+        .gmail-icon {
+            bottom: auto;
+            top: 20px;
+            left: 20px;
+        }
+
+        body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    color: #ffffff;
+    transition: background-color 0.5s, color 0.5s;
+    background-color: #1a1a1a;
+    /* Dark gray background */
+}
+
+/* Add any additional styles you want for the alarm form */
+.alarm-form {
+    margin-top: 20px;
+}
+
+.alarm-form label {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.alarm-form input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 80px;
+}
+
+.alarm-form button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.alarm-form button:hover {
+    background-color: #0056b3;
+}
+
+
+body.dark-mode {
+    background-color: #0e1011;
+    /* Black background */
+    color: #e0e0e0;
+}
+
+h1 {
+    text-align: center;
+    color: #ff4d4d;
+    /* Ferrari Red */
+}
+
+#bookmark-form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#bookmark-name,
+#bookmark-url,
+#bookmark-category {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #333;
+    /* Dark border */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #333;
+    /* Dark background */
+    color: #ffffff;
+    border-color: #ff2800;
+}
+
+#add-button {
+    cursor: pointer;
+    background-color: #333;
+    /* Dark background */
+    color: #ff2800;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#add-button:hover {
+    background-color: #1a1a1a;
+    /* Darker gray on hover */
+}
+
+#bookmark-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.bookmark-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px;
+    border: 1px solid #ff4d4d;
+    /* Ferrari Red border */
+    background-color: #333;
+    /* Dark background */
+    border-radius: 8px;
+    width: 300px;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.bookmark-item:hover {
+    transform: scale(1.05);
+}
+
+.bookmark-item a {
+    text-decoration: none;
+    color: #ff4d4d;
+    /* Ferrari Red */
+    font-size: 16px;
+    word-break: break-all;
+    cursor: pointer;
+}
+
+.bookmark-item button {
+    cursor: pointer;
+    background-color: #1a1a1a;
+    /* Dark background for buttons */
+    color: #ffffff;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.bookmark-item button:hover {
+    background-color: #000000;
+    /* Black on hover */
+}
+
+.bookmark-icons {
+    display: flex;
+    gap: 5px;
+}
+
+.bookmark-icons i {
+    color: #ff4d4d;
+    /* Ferrari Red */
+    font-size: 18px;
+}
+
+.mode-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.mode-toggle label {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.mode-toggle input {
+    display: none;
+}
+
+.slider {
+    position: relative;
+    width: 60px;
+    height: 34px;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background-color: #333;
+    /* Dark background for slider */
+    border-radius: 34px;
+    transition: 0.4s;
+}
+
+input:checked+.slider:before {
+    background-color: #ff4d4d;
+    /* Ferrari Red when checked */
+}
+
+.slider:after {
+    content: "🌙";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* Timer Section */
+#timer-section {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+#timer-section h2 {
+    color: #ff4d4d;
+    margin-bottom: 10px;
+}
+
+.timer {
+    color: #ffffff;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.timer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.timer-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.timer-button:hover {
+    opacity: 0.8;
+}
+
+.start-button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.stop-button {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+
+input:checked+.slider:after {
+    content: "☀️";
+    color: #1a1a1a;
+    /* Dark gray for sun */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #ff4d4d;
+    border-radius: 8px;
+    width: 70%;
+    color: #ffffff;
+}
+
+.close {
+    color: #ff4d4d;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ffffff;
+}
+
+#note-text {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #333;
+    color: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+    /* Light gray background */
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #222;
+    /* White background */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    color: #007bff;
+    /* Vibrant blue color */
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.mode-toggle {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+#bookmark-section,
+#note-section {
+    margin-bottom: 20px;
+}
+
+#bookmark-form,
+#note-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input,
+textarea,
+button {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease-in-out;
+}
+
+
+
+input:focus,
+textarea:focus,
+button:focus {
+    border-color: #007bff;
+    /* Blue border on focus */
+    outline: none;
+    height: 100%;
+}
+
+button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #0056b3;
+    /* Darker blue on hover */
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.bookmark-item {
+    background-color: #f1f1f1;
+    /* Light gray for bookmarks */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.bookmark-item div {
+    font-size: 14px;
+    color: #555;
+}
+
+.bookmark-icons {
+    display: flex;
+    gap: 5px;
+}
+
+.bookmark-icons i {
+    color: #dc3545;
+    /* Red color for icons */
+    font-size: 18px;
+}
+
+.note-item {
+    background-color: #333;
+    /* Light gray for notes */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-content {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.note-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.note-actions button {
+    background-color: #dc3545;
+    /* Red color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.note-actions button:hover {
+    background-color: #bd2130;
+    /* Darker red on hover */
+}'
+    </style>
+</head>
+
+<body class="dark-mode">
+<a href="welocome testing"></a>
+    <!-- Google Docs System -->
+    <div class="google-docs" id="googleDocs">
+        <!-- Add your Google Docs system content here -->
+        <iframe src="https://isbergen.managebac.com/student"></iframe>
+    </div>
+
+    <!-- Gmail System -->
+    <div class="gmail" id="gmail">
+        <!-- Add your Gmail system content here -->
+        <iframe src="https://www.youtube.com/"></iframe>
+    </div>
+
+    <!-- Google Docs Icon -->
+    <div class="google-docs-icon" id="googleDocsIcon">
+        <i class="fas fa-file-alt"></i>
+    </div>
+
+    <!-- Gmail Icon -->
+    <div class="gmail-icon" id="gmailIcon">
+        <i class="fas fa-envelope"></i>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Study - Buddy</h1>
+        </header>
+
+        <div class="mode-toggle">
+            <label for="dark-mode">Switch mode</label>
+            <div class="slider">
+                <input type="checkbox" id="dark-mode" onclick="toggleDarkMode()">
+            </div>
+        </div>
+
+        <section id="bookmark-section">
+            <div id="bookmark-form">
+                <input type="text" id="bookmark-name" placeholder="Bookmark Name">
+                <input type="url" id="bookmark-url" placeholder="Enter URL">
+                <input type="text" id="bookmark-category" placeholder="Category">
+                <button id="add-button" onclick="addBookmark()">Add Bookmark</button>
+            </div>
+
+            <ul id="bookmark-list"></ul>
+        </section>
+
+        <!-- Note-taking section -->
+        <section id="note-section">
+            <div id="note-form">
+                <textarea id="note-content" placeholder="Take a note..."></textarea>
+                <button id="add-note-button" onclick="addNote()">Add Note</button>
+            </div>
+
+            <ul id="note-list"></ul>
+        </section>
+    </div>
+
+    <section id="timer-section">
+        <h2>Timer</h2>
+        <div id="timer" class="timer">00:00:00</div>
+        <div class="timer-buttons">
+            <button id="start-timer-button" class="timer-button start-button" onclick="startTimer()">Start
+                Timer</button>
+            <button id="stop-timer-button" class="timer-button stop-button" onclick="stopTimer()">Stop Timer</button>
+        </div>
+    </section>
+
+    <section id="alarm-section">
+        <h2>Alarm</h2>
+        <input type="time" id="alarm-time">
+        <button id="set-alarm-button" onclick="setAlarm()">Set Alarm</button>
+    </section>
+
+    </div>
+
+    <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/4578786d-9456-474d-a790-96cb04815e1f/webchat/config.js" defer></script>
+    <script>
+        // JavaScript to toggle Google Docs system
+        document.addEventListener('DOMContentLoaded', function () {
+            const googleDocsIcon = document.getElementById('googleDocsIcon');
+            const googleDocs = document.getElementById('googleDocs');
+
+            googleDocsIcon.addEventListener('click', function () {
+                googleDocs.classList.toggle('show');
+            });
+
+            const gmailIcon = document.getElementById('gmailIcon');
+            const gmail = document.getElementById('gmail');
+
+            gmailIcon.addEventListener('click', function () {
+                gmail.classList.toggle('show');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+    loadBookmarks();
+    loadNotes();
+});
+
+let timerInterval;
+let timerRunning = false;
+let seconds = 0;
+let minutes = 0;
+let hours = 0;
+let alarmTime = 5 * 60; // 5 minutes (in seconds)
+let alarmPlayed = false;
+
+function startTimer() {
+    if (!timerRunning) {
+        timerInterval = setInterval(updateTimer, 1000);
+        timerRunning = true;
+    }
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+}
+
+function updateTimer() {
+    seconds++;
+    if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes === 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    const formattedTime = formatTime(hours) + ':' + formatTime(minutes) + ':' + formatTime(seconds);
+    document.getElementById('timer').textContent = formattedTime;
+
+    // Check if it's time for the alarm
+    if (seconds + (minutes * 60) + (hours * 3600) === alarmTime && !alarmPlayed) {
+        playAlarm();
+    }
+}
+
+function playAlarm() {
+    const alarmSound = document.getElementById('alarm-sound');
+    alarmSound.play();
+    alarmPlayed = true;
+}
+
+function formatTime(time) {
+    return time < 10 ? '0' + time : time;
+}
+
+function addBookmark() {
+    const nameInput = document.getElementById('bookmark-name');
+    const urlInput = document.getElementById('bookmark-url');
+    const categoryInput = document.getElementById('bookmark-category');
+
+    const name = nameInput.value.trim();
+    const url = urlInput.value.trim();
+    const category = categoryInput.value.trim();
+
+    if (name !== '' && url !== '' && category !== '') {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+        bookmarks.push({ name, url, category });
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+        loadBookmarks();
+        nameInput.value = '';
+        urlInput.value = '';
+        categoryInput.value = '';
+    } else {
+        alert('Please enter all details for the bookmark.');
+    }
+}
+
+function deleteBookmark(index) {
+    const confirmation = confirm('Are you sure you want to delete this bookmark?');
+    if (confirmation) {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        bookmarks.splice(index, 1);
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        loadBookmarks();
+    }
+}
+
+function editBookmark(index) {
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+    const { name, url, category } = bookmarks[index];
+
+    const newName = prompt('Enter new name:', name);
+    const newUrl = prompt('Enter new URL:', url);
+    const newCategory = prompt('Enter new category:', category);
+
+    if (newName !== null && newUrl !== null && newCategory !== null) {
+        bookmarks[index] = { name: newName, url: newUrl, category: newCategory };
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        loadBookmarks();
+    }
+}
+
+function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+}
+
+function loadBookmarks() {
+    const bookmarkList = document.getElementById('bookmark-list');
+    bookmarkList.innerHTML = '';
+
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+    bookmarks.forEach(({ name, url, category }, index) => {
+        const li = document.createElement('li');
+        li.className = 'bookmark-item';
+
+        // Create a clickable box for the entire bookmark
+        const clickableBox = document.createElement('div');
+        clickableBox.style.display = 'block'; // Make the box a block element to cover the entire width
+        clickableBox.style.cursor = 'pointer'; // Set cursor to pointer for better user experience
+
+        const nameElement = document.createElement('div');
+        nameElement.textContent = `${name} (${category})`; // Display name and category
+
+        // Append the name element to the clickable box
+        clickableBox.appendChild(nameElement);
+
+        // Add click event listener to the clickable box
+        clickableBox.addEventListener('click', function () {
+            window.open(url, '_blank');
+        });
+
+        li.appendChild(clickableBox);
+
+        const iconsDiv = document.createElement('div');
+        iconsDiv.className = 'bookmark-icons';
+
+        const editIcon = document.createElement('i');
+        editIcon.className = 'fas fa-pencil-alt';
+        editIcon.title = 'Edit Bookmark';
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'fas fa-trash';
+        deleteIcon.title = 'Delete Bookmark';
+
+        editIcon.addEventListener('click', function () {
+            editBookmark(index);
+        });
+
+        deleteIcon.addEventListener('click', function () {
+            deleteBookmark(index);
+        });
+
+        iconsDiv.appendChild(editIcon);
+        iconsDiv.appendChild(deleteIcon);
+
+        li.appendChild(iconsDiv);
+        bookmarkList.appendChild(li);
+    });
+}
+
+function addNote() {
+    const noteContentInput = document.getElementById('note-content');
+    const noteContent = noteContentInput.value.trim();
+
+    if (noteContent !== '') {
+        const notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+        const timestamp = new Date().toLocaleString();
+        notes.push({ content: noteContent, timestamp });
+        localStorage.setItem('notes', JSON.stringify(notes));
+
+        loadNotes();
+        noteContentInput.value = '';
+    } else {
+        alert('Please enter some content for the note.');
+    }
+}
+
+function deleteNote(index) {
+    const confirmation = confirm('Are you sure you want to delete this note?');
+    if (confirmation) {
+        const notes = JSON.parse(localStorage.getItem('notes')) || [];
+        notes.splice(index, 1);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        loadNotes();
+    }
+}
+
+function loadNotes() {
+    const noteList = document.getElementById('note-list');
+    noteList.innerHTML = '';
+
+    const notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+    notes.forEach(({ content, timestamp }, index) => {
+        const li = document.createElement('li');
+        li.className = 'note-item';
+
+        const contentElement = document.createElement('div');
+        contentElement.innerHTML = `<strong>${timestamp}</strong><br>${content}`;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete Note';
+        deleteButton.addEventListener('click', function () {
+            deleteNote(index);
+        });
+
+        li.appendChild(contentElement);
+        li.appendChild(deleteButton);
+        noteList.appendChild(li);
+    });
+}
+
+function setAlarm() {
+    const alarmTime = document.getElementById('alarm-time').value;
+    if (alarmTime !== '') {
+        alert('Alarm is set for ' + alarmTime);
+    } else {
+        alert('Please select a valid time for the alarm.');
+    }
+}
+
+function checkAlarm(currentTime) {
+    const alarmTime = document.getElementById('alarm-time').value;
+    if (alarmTime === currentTime) {
+        alert('Alarm!');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    loadBookmarks();
+    loadNotes();
+    initCalendar(); // Initialize the calendar when the DOM content is loaded
+});
+
+function initCalendar() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth', // Set the initial view of the calendar
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: [
+            // Define your events here
+            {
+                title: 'Study Session',
+                start: '2024-02-06T10:00:00',
+                end: '2024-02-06T12:00:00'
+            },
+            {
+                title: 'Group Meeting',
+                start: '2024-02-10T14:00:00',
+                end: '2024-02-10T16:00:00'
+            }
+            // Add more events as needed
+        ]
+    });
+
+    calendar.render();
+}
+
+    </script>
+</body>
+
+</html>
